@@ -1,0 +1,10 @@
+Mini-Corpus/*
+Corpus/*
+mini-corpus-info/*
+corpus-info/*
+
+results.txt
+weights.txt
+plan.txt
+plan.txt~
+notes.txt
