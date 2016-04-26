@@ -4,7 +4,14 @@ mini-corpus-info/*
 corpus-info/*
 
 results.txt
+results.txt~
 weights.txt
+weights.txt~
 plan.txt
 plan.txt~
 notes.txt
+notes.txt~
+
+quick-backup.cc
+.gitignore
+old/*
