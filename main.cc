@@ -22,7 +22,7 @@ COMPILATION ===============================================================
 TO COMPILE ON UBUNTU VIA COMMAND LINE: 
 g++ main.cc NaiveBayes.cc typedefs.cc -lboost_filesystem -lboost_system -o main
 or
-with -L /usr/include/boost  before main.cc ...
+g++ -L /usr/include/boost main.cc ...(rest is same as above)
 
 
 HOW TO USE ================================================================
