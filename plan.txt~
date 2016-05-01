@@ -1,0 +1,20 @@
+* CHANGES TO MAKE *
+- Make corpus location taken as input
+- Find ways to make code
+-- faster
+-- cleaner
+-- more oop
+- Document things like
+-- how to build, 
+-- and how to structure corpus folder/files
+- post on github
+
+make faster =========
+- identify common tasks like find/sort and use standard algos instead
+- figure best data structures according to use
+
+make cleaner ========
+- identify what code does what and figure out groupings
+- figure how to make it a class that can be used flexibly
+- seperate helpers and class specific stuff in different .h files
+- make main() neater
