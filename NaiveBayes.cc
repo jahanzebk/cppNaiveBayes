@@ -22,7 +22,7 @@ namespace fs = boost::filesystem;
 using namespace std;
 
 //removes punctuation from a string
-string NaiveBayesClassifier::removePunctuation(string &text)
+string NaiveBayesClassifier::removePunctuation(string& text)
 {
     string result;
     remove_copy_if(text.begin(), text.end(),
@@ -33,7 +33,7 @@ string NaiveBayesClassifier::removePunctuation(string &text)
 }
 
 // extracts words of the document and populates the words smatrix
-smatrix NaiveBayesClassifier::tokenize(svec docs)
+smatrix NaiveBayesClassifier::tokenize(svec& docs)
 {
     smatrix allWords;
     for (int i = 0; i < docs.size(); i++)
@@ -99,7 +99,8 @@ bool NaiveBayesClassifier::checkIfStopWord(string word)
 }
 
 // basic preperation of documents regardles of which document set you use.
-svec NaiveBayesClassifier::prepDocs(docVec docs)
+// removes punctation and lower cases all documents passed
+svec NaiveBayesClassifier::prepDocs(docVec& docs)
 {
     svec retVec;
     for (int i = 0; i < docs.size(); i++)
@@ -167,7 +168,7 @@ int NaiveBayesClassifier::numDocsInFolder(string myDir)
 
 
 //removes stop words from the matrix of words
-void NaiveBayesClassifier::removeStopWords(smatrix &words)
+void NaiveBayesClassifier::removeStopWords(smatrix& words)
 {
     for (int i = 0; i < words.size(); i++)
     {
@@ -197,7 +198,7 @@ double NaiveBayesClassifier::findWeight(string word, string cat)
 
 // makes only the dictionary, i.e A vector containing maps, each map represents a document
 // and contains it's words and their word counts
-mapSIVec NaiveBayesClassifier::docWordDict(smatrix words) // -------------------------------- look into this
+mapSIVec NaiveBayesClassifier::docWordDict(smatrix& words) // -------------------------------- look into this
 {
     mapSIVec allDocsDict;
 
@@ -232,7 +233,7 @@ mapSIVec NaiveBayesClassifier::docWordDict(smatrix words) // -------------------
 }
 
 // populates main training dictionary, vocabulary and gets Term Frequency (TF) values all in one loop for speed, returns TFs since rest are global
-mapSDVec NaiveBayesClassifier::docWordDictAndVocabAndTFs(smatrix words)
+mapSDVec NaiveBayesClassifier::docWordDictAndVocabAndTFs(smatrix& words)
 {
     mapSDVec allTfs;
 
@@ -276,7 +277,7 @@ mapSDVec NaiveBayesClassifier::docWordDictAndVocabAndTFs(smatrix words)
 }
 
 // finds Inverse Document Frequency (IDF) values of each word in the vocabulary
-mapSD NaiveBayesClassifier::getIDFs(mapSIVec allDocsWords) // go through vocab, for each word, go through each doc, if word occurs numDocsWithWord++
+mapSD NaiveBayesClassifier::getIDFs(mapSIVec& allDocsWords) // go through vocab, for each word, go through each doc, if word occurs numDocsWithWord++
 {
     mapSD idfs;
     double numDocs = allDocsWords.size();
@@ -299,7 +300,7 @@ mapSD NaiveBayesClassifier::getIDFs(mapSIVec allDocsWords) // go through vocab, 
 }
 
 // This function combines the TF and IDF values to give TFIDF values to be used for training
-mapSDVec NaiveBayesClassifier::combineTFIDF(mapSDVec allTfs, mapSD allIDFs)
+mapSDVec NaiveBayesClassifier::combineTFIDF(mapSDVec& allTfs, mapSD& allIDFs)
 {
     mapSDVec TFIDFvec;
     for (int i = 0; i < allTfs.size(); i++)
@@ -318,7 +319,7 @@ mapSDVec NaiveBayesClassifier::combineTFIDF(mapSDVec allTfs, mapSD allIDFs)
 
 // normalizes TFIDF values so that all values are within a similar range, this prevents naive bayes from giving
 // more priority to longer documents for having more words, and thus irrationally higher TFIDF values.
-void NaiveBayesClassifier::normalizeTFIDF(mapSDVec &TFIDFvec, mapSIVec allDocsWords)
+void NaiveBayesClassifier::normalizeTFIDF(mapSDVec& TFIDFvec, mapSIVec& allDocsWords)
 {
     for (int i = 0; i < TFIDFvec.size(); i++)
     {
@@ -340,7 +341,7 @@ void NaiveBayesClassifier::normalizeTFIDF(mapSDVec &TFIDFvec, mapSIVec allDocsWo
 }
 
 // A function used while training classifier to calculate the denominator since it is same for each category gone through
-dvec NaiveBayesClassifier::calcNaiveBayesDenominator(string cat, mapSDVec TFIDFVec)
+dvec NaiveBayesClassifier::calcNaiveBayesDenominator(string cat, mapSDVec& TFIDFVec)
 {
     dvec retVec;
     double sum = 0;
@@ -363,7 +364,7 @@ dvec NaiveBayesClassifier::calcNaiveBayesDenominator(string cat, mapSDVec TFIDFV
     return retVec; // just to return two values
 }
 
-void NaiveBayesClassifier::naiveBayesTrain(mapSDVec TFIDFvec) // complement naive bayes; words of more importance in one cat will have lower weight
+void NaiveBayesClassifier::naiveBayesTrain(mapSDVec& TFIDFvec) // complement naive bayes; words of more importance in one cat will have lower weight
 {
     for (int i = 0; i < cats.size(); i++)
     {
@@ -427,7 +428,7 @@ void NaiveBayesClassifier::normalizeWeights()
 
 
 // one function to preprocess data for training and report status after each step
-mapSDVec NaiveBayesClassifier::prepAndFindTFIDFs(docVec docs, bool train)
+mapSDVec NaiveBayesClassifier::prepAndFindTFIDFs(docVec& docs, bool train)
 {
     svec alteredDocs = prepDocs(docs); // alter docs, i.e. remove punctuation, set to lower case..
     cout << "Altered.." << endl;
@@ -479,7 +480,7 @@ mapSDVec NaiveBayesClassifier::prepAndFindTFIDFs(docVec docs, bool train)
 // }
 
 // @TODO: fix this function up
-string NaiveBayesClassifier::decideBestCat(mapSD catsScores)
+string NaiveBayesClassifier::decideBestCat(mapSD& catsScores)
 {
     bool foundit = false;
     mapSD::iterator curr, endofmap;
@@ -508,7 +509,7 @@ string NaiveBayesClassifier::decideBestCat(mapSD catsScores)
 }
 
 // classify many documents (sets of documents)
-void NaiveBayesClassifier::naiveBayesClassifyMany(docVec &docsToTest, bool output)
+void NaiveBayesClassifier::naiveBayesClassifyMany(docVec& docsToTest, bool output)
 {
     svec alteredDocs = prepDocs(docsToTest);
     smatrix words = tokenize(alteredDocs);
@@ -533,17 +534,16 @@ void NaiveBayesClassifier::naiveBayesClassifyMany(docVec &docsToTest, bool outpu
                 double currWeight = findWeight(curr->first, cats[j]); // find the weight of the current word for the current category
                 catScore += (curr->second * currWeight); // add up the number of times a word appears times its weight for that category
             }
-            cout << cats[j] << ": " << catScore << endl;
+            // cout << cats[j] << ": " << catScore << endl;
             catsScores.insert(pair<string, double>(cats[j], catScore));
         }
-        cout << endl;
+        // cout << endl;
 
-        string bestCat = decideBestCat(catsScores); // chooses lowest value among category scores
-        docsToTest[i].cat = bestCat;
+        docsToTest[i].cat = decideBestCat(catsScores); // chooses lowest value among category scores
         if (output) // if output is wanted in the console / results file
         {
             cout
-             << "Predicted Cat: " << bestCat << ", Doc: " << docsToTest[i].title << endl << endl;
+             << "Predicted Cat: " << docsToTest[i].cat << ", Doc: " << docsToTest[i].title << endl << endl;
         }
     }
     if (output) { // if output is wanted in the console / results file
@@ -620,7 +620,7 @@ void NaiveBayesClassifier::populateDocVec(string myDir, int depth)
 }
 
 // find's accuracy given a certain set of documents
-void NaiveBayesClassifier::checkAccuracy(docVec docsToCheck)
+void NaiveBayesClassifier::checkAccuracy(docVec& docsToCheck)
 {
     clock_t startTime3 = clock(); // timer
     docVec docsToCheck_Copy;
