@@ -1,13 +1,10 @@
 #ifndef NAIVEBAYES_H
 #define NAIVEBAYES_H
 
-
-#include <boost/filesystem.hpp> // boost for scanning through folders and loading corpus
 #include "typedefs.h"
 #include "doc.h"
 #include "weight.h"
 
-namespace fs = boost::filesystem;
 using namespace std;
 
 class NaiveBayesClassifier {
@@ -46,7 +43,7 @@ public:
     void getWeightsFromFile();
 
     // counts number of documents in given folder
-    int numDocsInFolder(fs::path targetDir);
+    int numDocsInFolder(string myDir);
 
     //removes stop words from the matrix of words
     void removeStopWords(smatrix &words);

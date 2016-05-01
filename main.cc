@@ -1,15 +1,9 @@
 #include <iostream>
 #include <string>
-#include <boost/filesystem.hpp> // boost for scanning through folders and loading corpus
-#include <boost/foreach.hpp> // boost for scanning through folders and loading corpus
-#include <sstream>
 #include <fstream> // files stuff
-#include <algorithm> // copy()
-#include <iterator>
 #include <vector>
 #include <ctype.h>
 #include <map> // multiple data structures are contained in maps, e.g. the dictionary, the TFIDF values, etc.
-#include <math.h> // for log()
 #include <ctime> // just for timing
 #include "NaiveBayes.h"
 #include "typedefs.h"

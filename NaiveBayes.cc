@@ -1,4 +1,5 @@
 #include "NaiveBayes.h"
+
 #include <iostream>
 #include <string>
 #include <boost/filesystem.hpp> // boost for scanning through folders and loading corpus
@@ -17,9 +18,8 @@
 #include "doc.h"
 #include "weight.h"
 
-// namespace fs = boost::filesystem;
+namespace fs = boost::filesystem;
 using namespace std;
-
 
 //removes punctuation from a string
 string NaiveBayesClassifier::removePunctuation(string &text)
@@ -152,8 +152,9 @@ void NaiveBayesClassifier::getWeightsFromFile()
 }
 
 // counts number of documents in given folder
-int NaiveBayesClassifier::numDocsInFolder(fs::path targetDir)
+int NaiveBayesClassifier::numDocsInFolder(string myDir)
 {
+    fs::path targetDir(myDir);
     fs::directory_iterator it(targetDir), eod;
     int count = 0;
 
@@ -559,7 +560,8 @@ void NaiveBayesClassifier::populateDocVec(string myDir, int depth)
 {
     fs::path targetDir(myDir);
     fs::directory_iterator it(targetDir), eod;
-    int numDocsInCat = numDocsInFolder(targetDir);
+
+    int numDocsInCat = numDocsInFolder(myDir);
     int trainingSetSize = numDocsInCat * 0.6; // 60% of the documents
     int testSetSize = numDocsInCat * 0.8; // next 20% limit
     int j = 0;
