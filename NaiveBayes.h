@@ -12,19 +12,15 @@ using namespace std;
 
 class NaiveBayesClassifier {
 private:
-    //
-public:
-    // @TODO: make these into class variables
-    docVec docs; // holds training data
-    docVec testDocs; // holds testing data
-    docVec cvDocs; // this is another type of testing data, just so we get another accuracy and make sure data isn't biased
     svec vocab; // sort for vocabulary; this contains each word from entire corpus once (all vocabulary used)
     svec cats; // a list of categories training data was obtained from
     wVec weights; // a vector of all the weight objects
     mapSIVec allDocsDict; // A vector containing maps, each map represents a document and contains it's words and their word counts
     string currCat; // used while loading corpus using boost, made global to avoid repetitive passing back into function
-
-
+public:
+    docVec docs; // holds training data
+    docVec testDocs; // holds testing data
+    docVec cvDocs; // this is another type of testing data, just so we get another accuracy and make sure data isn't biased
     //removes punctuation from a string
     string removePunctuation(string &text);
 
@@ -40,7 +36,6 @@ public:
     // basic preperation of documents regardles of which document set you use.
     svec prepDocs(docVec docs);
 
-
     // splits a string by a delimeter
     svec split(string s, char delim);
 
@@ -52,7 +47,6 @@ public:
 
     // counts number of documents in given folder
     int numDocsInFolder(fs::path targetDir);
-
 
     //removes stop words from the matrix of words
     void removeStopWords(smatrix &words);
@@ -82,12 +76,11 @@ public:
     dvec calcNaiveBayesDenominator(string cat, mapSDVec TFIDFVec);
 
     // complement naive bayes; words of more importance in one cat will have lower weight
-    wVec naiveBayesTrain(mapSDVec TFIDFvec); 
+    void naiveBayesTrain(mapSDVec TFIDFvec); 
 
     // this function normalizes the weights and writes them to a file to speed up classification if data has already been trained on a corpus
     // weights are normalized to avoid large range of numbers and keep numbers in a similar range
     void normalizeWeights();
-
 
     // one function to preprocess data for training and report status after each step
     mapSDVec prepAndFindTFIDFs(docVec docs, bool train);
@@ -97,7 +90,6 @@ public:
 
     // classify many documents (sets of documents)
     void naiveBayesClassifyMany(docVec &docsToTest, bool output = false);
-
 
     // picks up documents from corpus using boost, the first 60% of documents of each category is used to train
     // the classifier, then two different sets of 20% are used to test it (testDocs and cvDocs)

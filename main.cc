@@ -49,7 +49,6 @@ int main()
     // INITIALIZATION
     // github link for sample corpii: <@TODO>
     clf.populateDocVec("Mini-Corpus"); // change this to where mini corpus is stored with cpp file (in project folder)
-    cout << "cats: " << clf.cats << endl;
 
     string trainBool; // y if you want to train and create weights, anything else if you want to just read from file
     cout << "Would you like to train the algorithm, or pick up weights from the weights.txt file? y for yes (train from corpus - longer), anything else for no(train from weights.txt - quicker).";
@@ -59,7 +58,7 @@ int main()
     {
         // calculate tfidfs, train weights and normalize them
         mapSDVec TFIDFvec = clf.prepAndFindTFIDFs(clf.docs, true);
-        clf.weights = clf.naiveBayesTrain(TFIDFvec);
+        clf.naiveBayesTrain(TFIDFvec);
         clf.normalizeWeights();
     }
     else {

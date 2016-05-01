@@ -362,12 +362,8 @@ dvec NaiveBayesClassifier::calcNaiveBayesDenominator(string cat, mapSDVec TFIDFV
     return retVec; // just to return two values
 }
 
-wVec NaiveBayesClassifier::naiveBayesTrain(mapSDVec TFIDFvec) // complement naive bayes; words of more importance in one cat will have lower weight
+void NaiveBayesClassifier::naiveBayesTrain(mapSDVec TFIDFvec) // complement naive bayes; words of more importance in one cat will have lower weight
 {
-    double currWeight = 0;
-    wVec weights;
-
-
     for (int i = 0; i < cats.size(); i++)
     {
         dvec denominatorData = calcNaiveBayesDenominator(cats[i], TFIDFvec); // denominator is same for each class
@@ -378,17 +374,21 @@ wVec NaiveBayesClassifier::naiveBayesTrain(mapSDVec TFIDFvec) // complement naiv
         for (int k = 0; k < vocab.size(); k++)
         {
             double nominator = 0;
-            currWeight = 0;
+            double currWeight = 0;
 
             for (int j = 0; j < TFIDFvec.size(); j++)
             {
-                if (docs[j].cat == cats[i]) // then skip this document, complement naive bayes takes all tfidfs from all docs not of a specific class, resulting in a value that explains how poorly a word doesn't fit in a class.
+            	// then skip this document, complement naive bayes takes all tfidfs from all docs
+            	// not of a specific class, resulting in a value that explains how poorly a word 
+            	// doesn't fit in a class.
+                if (docs[j].cat == cats[i]) 
                 {
                     continue;
                 }
                 double tfidfVal = TFIDFvec[j][vocab[k]];
                 nominator += (tfidfVal + 1);
             }
+
             currWeight = log(nominator / denominator);
             weight weightObj; // store weight calculated in an object
             weightObj.cat = cats[i];
@@ -397,7 +397,6 @@ wVec NaiveBayesClassifier::naiveBayesTrain(mapSDVec TFIDFvec) // complement naiv
             weights.push_back(weightObj); // store it in a vector of weights
         }
     }
-    return weights;
 }
 
 // this function normalizes the weights and writes them to a file to speed up classification if data has already been trained on a corpus
