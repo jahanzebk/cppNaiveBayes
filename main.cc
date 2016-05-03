@@ -9,28 +9,8 @@
 #include "typedefs.h"
 #include "doc.h"
 #include "weight.h"
-/*
-
-INTRODUCTION ==============================================================
-This code, written by Jahanzeb Khan, is an implementation of the (term-weighted) 
-Complement Naive Bayes Algorithm in C++. The paper that describes the algorithm,
-and which was followed to write this code is:
-< https://people.csail.mit.edu/jrennie/papers/icml03-nb.pdf >
 
 
-COMPILATION ===============================================================
-TO COMPILE ON UBUNTU VIA COMMAND LINE: 
-g++ main.cc NaiveBayes.cc typedefs.cc -lboost_filesystem -lboost_system -o main
-or
-g++ -L /usr/include/boost main.cc ...(rest is same as above)
-
-
-HOW TO USE ================================================================
-(Decide and make accordingly for most speed and flexibility)
-
-
-
-*/
 using namespace std;
 
 
