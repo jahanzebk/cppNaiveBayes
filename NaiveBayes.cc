@@ -21,6 +21,11 @@
 namespace fs = boost::filesystem;
 using namespace std;
 
+
+void NaiveBayesClassifier::tokenizeDocs(docVec& docs) {
+    //
+}
+
 //removes punctuation from a string
 string NaiveBayesClassifier::removePunctuation(string& text)
 {

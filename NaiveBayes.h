@@ -15,6 +15,8 @@ private:
     mapSIVec allDocsDict; // A vector containing maps, each map represents a document and contains it's words and their word counts
     string currCat; // used while loading corpus using boost, made global to avoid repetitive passing back into function
 
+    // Full prep of docs, this function ...
+    void tokenizeDocs(docVec& docs);
 
     // basic preperation of documents regardles of which document set you use.
     svec prepDocs(docVec& docs);
