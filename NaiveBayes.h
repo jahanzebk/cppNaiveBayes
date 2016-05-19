@@ -89,9 +89,6 @@ public:
     // one function to preprocess data for training and report status after each step
     mapSDVec prepAndFindTFIDFs(docVec& docs, bool train);
 
-    // @TODO: fix this function up
-    string decideBestCat(mapSD& catsScores);
-
     // classify many documents (sets of documents)
     void naiveBayesClassifyMany(docVec& docsToTest, bool output = false);
 

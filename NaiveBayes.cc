@@ -465,54 +465,6 @@ mapSDVec NaiveBayesClassifier::prepAndFindTFIDFs(docVec& docs, bool train)
     return TFIDFvec;
 }
 
-// this function determines which category cored the best (lowest) for a document during prediction
-string NaiveBayesClassifier::decideBestCat(mapSD& catsScores)
-{
-    string category = catsScores.begin()->first;
-    int minScore = catsScores.begin()->second;
-    mapSD::iterator curr, endofmap;
-
-    for (curr = catsScores.begin(), endofmap = catsScores.end(); curr != catsScores.end(); curr++)
-    {
-        if (curr->second < minScore)
-        {
-            category = curr->first;
-            minScore = curr->second;
-        }
-    }
-
-    return category;
-}
-
-// @TODO: fix this function up
-// string NaiveBayesClassifier::decideBestCat(mapSD& catsScores)
-// {
-//     bool foundit = false;
-//     mapSD::iterator curr, endofmap;
-//     for (curr = catsScores.begin(), endofmap = catsScores.end(); curr != catsScores.end(); curr++) // go through each category's score
-//     {
-//         mapSD::iterator currIn, endofmapIn;
-//         for (currIn = catsScores.begin(), endofmapIn = catsScores.end(); currIn != catsScores.end(); currIn++) // compare each against each other category's score
-//         {
-//             if ((curr->second) <= (currIn->second)) // if it is lower than one, move on and check next one
-//             {
-//                 foundit = true;
-//                 continue;
-//             }
-//             else if ((curr->second) > (currIn->second)) // if it is higher than any, just skipp it.
-//             {
-//                 foundit = false;
-//                 break;
-//             }
-//         }
-
-//         if (foundit) // return because it is not lower than any other
-//         {
-//             return curr->first;
-//         }
-//     }
-// }
-
 // classify many documents (sets of documents)
 void NaiveBayesClassifier::naiveBayesClassifyMany(docVec& docsToTest, bool output)
 {
@@ -529,7 +481,9 @@ void NaiveBayesClassifier::naiveBayesClassifyMany(docVec& docsToTest, bool outpu
 
     for (int i = 0; i < allDocsDict2.size(); i++)
     {
-        mapSD catsScores;
+        bool temp_first_tracker = false;
+        string bestCat;
+        double minScore;
         for (int j = 0; j < cats.size(); j++)
         {
             double catScore = 0;
@@ -539,12 +493,22 @@ void NaiveBayesClassifier::naiveBayesClassifyMany(docVec& docsToTest, bool outpu
                 double currWeight = findWeight(curr->first, cats[j]); // find the weight of the current word for the current category
                 catScore += (curr->second * currWeight); // add up the number of times a word appears times its weight for that category
             }
-            // cout << cats[j] << ": " << catScore << endl;
-            catsScores.insert(pair<string, double>(cats[j], catScore));
+            
+            if (temp_first_tracker) {
+                if (catScore < minScore)
+                {
+                    bestCat = cats[j];
+                    minScore = catScore;
+                }
+            } else {
+                temp_first_tracker = true;
+                bestCat = cats[j];
+                minScore = catScore;
+            }
         }
-        // cout << endl;
+        
 
-        docsToTest[i].cat = decideBestCat(catsScores); // chooses lowest value among category scores
+        docsToTest[i].cat = bestCat; // chooses lowest value among category scores
         if (output) // if output is wanted in the console / results file
         {
             cout
