@@ -466,7 +466,7 @@ mapSDVec NaiveBayesClassifier::prepAndFindTFIDFs(docVec& docs, bool train)
 }
 
 // this function determines which category cored the best (lowest) for a document during prediction
-string decideBestCat(mapSD catsScores)
+string NaiveBayesClassifier::decideBestCat(mapSD& catsScores)
 {
     string category = catsScores.begin()->first;
     int minScore = catsScores.begin()->second;
