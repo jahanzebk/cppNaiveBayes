@@ -11,9 +11,10 @@ class NaiveBayesClassifier {
 private:
     svec vocab; // sort for vocabulary; this contains each word from entire corpus once (all vocabulary used)
     svec cats; // a list of categories training data was obtained from
-    wVec weights; // a vector of all the weight objects
+    // wVec weights; // a vector of all the weight objects
     mapSIVec allDocsDict; // A vector containing maps, each map represents a document and contains it's words and their word counts
     string currCat; // used while loading corpus using boost, made global to avoid repetitive passing back into function
+    mapSmapSD weights; // a vector of all the weight objects
 
     // Full prep of docs, this function ...
     void tokenizeDocs(docVec& docs);
