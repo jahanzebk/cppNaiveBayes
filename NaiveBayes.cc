@@ -466,52 +466,52 @@ mapSDVec NaiveBayesClassifier::prepAndFindTFIDFs(docVec& docs, bool train)
 }
 
 // this function determines which category cored the best (lowest) for a document during prediction
-// string decideBestCat(mapSD catsScores)
-// {
-//     string category = catsScores.begin()->first;
-//     int minScore = catsScores.begin()->second;
-//     mapSD::iterator curr, endofmap;
-
-//     for (curr = catsScores.begin(), endofmap = catsScores.end(); curr != catsScores.end(); curr++)
-//     {
-//         if (curr->second > minScore)
-//         {
-//             category = curr->first;
-//             minScore = curr->second;
-//         }
-//     }
-
-//     return category;
-// }
-
-// @TODO: fix this function up
-string NaiveBayesClassifier::decideBestCat(mapSD& catsScores)
+string decideBestCat(mapSD catsScores)
 {
-    bool foundit = false;
+    string category = catsScores.begin()->first;
+    int minScore = catsScores.begin()->second;
     mapSD::iterator curr, endofmap;
-    for (curr = catsScores.begin(), endofmap = catsScores.end(); curr != catsScores.end(); curr++) // go through each category's score
-    {
-        mapSD::iterator currIn, endofmapIn;
-        for (currIn = catsScores.begin(), endofmapIn = catsScores.end(); currIn != catsScores.end(); currIn++) // compare each against each other category's score
-        {
-            if ((curr->second) <= (currIn->second)) // if it is lower than one, move on and check next one
-            {
-                foundit = true;
-                continue;
-            }
-            else if ((curr->second) > (currIn->second)) // if it is higher than any, just skipp it.
-            {
-                foundit = false;
-                break;
-            }
-        }
 
-        if (foundit) // return because it is not lower than any other
+    for (curr = catsScores.begin(), endofmap = catsScores.end(); curr != catsScores.end(); curr++)
+    {
+        if (curr->second < minScore)
         {
-            return curr->first;
+            category = curr->first;
+            minScore = curr->second;
         }
     }
+
+    return category;
 }
+
+// @TODO: fix this function up
+// string NaiveBayesClassifier::decideBestCat(mapSD& catsScores)
+// {
+//     bool foundit = false;
+//     mapSD::iterator curr, endofmap;
+//     for (curr = catsScores.begin(), endofmap = catsScores.end(); curr != catsScores.end(); curr++) // go through each category's score
+//     {
+//         mapSD::iterator currIn, endofmapIn;
+//         for (currIn = catsScores.begin(), endofmapIn = catsScores.end(); currIn != catsScores.end(); currIn++) // compare each against each other category's score
+//         {
+//             if ((curr->second) <= (currIn->second)) // if it is lower than one, move on and check next one
+//             {
+//                 foundit = true;
+//                 continue;
+//             }
+//             else if ((curr->second) > (currIn->second)) // if it is higher than any, just skipp it.
+//             {
+//                 foundit = false;
+//                 break;
+//             }
+//         }
+
+//         if (foundit) // return because it is not lower than any other
+//         {
+//             return curr->first;
+//         }
+//     }
+// }
 
 // classify many documents (sets of documents)
 void NaiveBayesClassifier::naiveBayesClassifyMany(docVec& docsToTest, bool output)
