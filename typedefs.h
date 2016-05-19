@@ -18,6 +18,9 @@ typedef vector<mapSI> mapSIVec;
 typedef vector<mapSD> mapSDVec;
 
 
+typedef map<string, mapSD> mapSmapSD;
+
+
 //operator overload for outputting svec
 ostream& operator << (ostream &stream, svec &obj);
 

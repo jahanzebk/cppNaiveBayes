@@ -148,12 +148,9 @@ void NaiveBayesClassifier::getWeightsFromFile()
     string line;
     while (getline(weightFile, line))
     {
-        weight currWeight;
         svec weightInfo = split(line, ':'); // split each line by :'s.
-        currWeight.cat = weightInfo[0]; // first part of string is the category
-        currWeight.word = weightInfo[1]; // second part of string is the word
-        currWeight.weight = string_to_double(weightInfo[2]); // third part of string is the weight
-        weights.push_back(currWeight); // put in the weights vector
+        // first part of string is the category, second is the word, third the weight
+        weights[weightInfo[0]][weightInfo[1]] = string_to_double(weightInfo[2]); 
     }
 }
 
@@ -191,14 +188,19 @@ void NaiveBayesClassifier::removeStopWords(smatrix& words)
 // find the weight of a certain word from the weights vector
 double NaiveBayesClassifier::findWeight(string word, string cat)
 {
-    for (int i = 0; i < weights.size(); i++)
-    {
-        if (weights[i].word == word && weights[i].cat == cat)
-        {
-            return weights[i].weight;
+    mapSmapSD::iterator catWeights = weights.find(cat);
+    if (catWeights == weights.end()) {
+        return 0;
+    } else {
+        mapSD::iterator it = catWeights->second.find(word);
+        if (it == catWeights->second.end()) {
+            return 0;
+        } else {
+            double val = it->second;
+            return val;
         }
     }
-    return 0; // if word wasn't found, return 0
+
 }
 
 // makes only the dictionary, i.e A vector containing maps, each map represents a document
@@ -397,11 +399,7 @@ void NaiveBayesClassifier::naiveBayesTrain(mapSDVec& TFIDFvec) // complement nai
             }
 
             currWeight = log(nominator / denominator);
-            weight weightObj; // store weight calculated in an object
-            weightObj.cat = cats[i];
-            weightObj.weight = currWeight;
-            weightObj.word = vocab[k];
-            weights.push_back(weightObj); // store it in a vector of weights
+            weights[cats[i]][vocab[k]] = currWeight;
         }
     }
 }
@@ -412,21 +410,55 @@ void NaiveBayesClassifier::normalizeWeights()
 {
     ofstream weightsFile;
     weightsFile.open ("weights.txt", fstream::out); // open file for writing
-    for (int i = 0; i < weights.size(); i++)
+    // for (int i = 0; i < weights.size(); i++)
+    // {
+    //     double denominator = 0;
+    //     for (int j = 0; j < weights.size(); j++)
+    //     {
+    //         if (weights[i].cat == weights[j].cat)
+    //         {
+    //             if (weights[j].weight < 0) // add up absolute values of weights
+    //                 denominator += ((-1) * weights[j].weight);
+    //             else
+    //                 denominator += weights[j].weight;
+    //         }
+    //     }
+    //     weights[i].weight /= denominator; // this is how weights are normalized
+    //     weightsFile << weights[i].cat << ":" << weights[i].word << ":" << weights[i].weight << "\n";
+    // }
+
+    // for each category, find total of the weights, then for each weight, divide it by the right denom
+    mapSD weight_totals;
+    // find totals of all weights in each category
+    for (int i = 0; i < cats.size(); i++)
     {
         double denominator = 0;
-        for (int j = 0; j < weights.size(); j++)
+        mapSD& catWeights = weights.find(cats[i])->second;
+        mapSD::iterator adder_it, endof_adder_it;
+
+        for (adder_it = catWeights.begin(), endof_adder_it = catWeights.end(); adder_it != endof_adder_it; adder_it++)
         {
-            if (weights[i].cat == weights[j].cat)
-            {
-                if (weights[j].weight < 0) // add up absolute values of weights
-                    denominator += ((-1) * weights[j].weight);
-                else
-                    denominator += weights[j].weight;
+            if (adder_it->second < 0) { // add up absolute values of weights
+                denominator += ((-1) * adder_it->second);
+            } else {
+                denominator += adder_it->second;
             }
         }
-        weights[i].weight /= denominator; // this is how weights are normalized
-        weightsFile << weights[i].cat << ":" << weights[i].word << ":" << weights[i].weight << "\n";
+
+        weight_totals[cats[i]] = denominator;
+    }
+
+    // divide each weight by the respective total.
+    for (int i = 0; i < cats.size(); i++)
+    {
+        mapSD& catWeights = weights.find(cats[i])->second;
+        mapSD::iterator weight_it, endof_weight_it;
+
+        for (weight_it = catWeights.begin(), endof_weight_it = catWeights.end(); weight_it != endof_weight_it; weight_it++)
+        {
+            weight_it->second = weight_it->second / weight_totals[cats[i]]; // this is how weights are normalized
+            weightsFile << cats[i] << ":" << weight_it->first << ":" << weight_it->second  << "\n";
+        }
     }
     weightsFile.close();
 }
@@ -465,54 +497,6 @@ mapSDVec NaiveBayesClassifier::prepAndFindTFIDFs(docVec& docs, bool train)
     return TFIDFvec;
 }
 
-// this function determines which category cored the best (lowest) for a document during prediction
-// string decideBestCat(mapSD catsScores)
-// {
-//     string category = catsScores.begin()->first;
-//     int minScore = catsScores.begin()->second;
-//     mapSD::iterator curr, endofmap;
-
-//     for (curr = catsScores.begin(), endofmap = catsScores.end(); curr != catsScores.end(); curr++)
-//     {
-//         if (curr->second > minScore)
-//         {
-//             category = curr->first;
-//             minScore = curr->second;
-//         }
-//     }
-
-//     return category;
-// }
-
-// @TODO: fix this function up
-string NaiveBayesClassifier::decideBestCat(mapSD& catsScores)
-{
-    bool foundit = false;
-    mapSD::iterator curr, endofmap;
-    for (curr = catsScores.begin(), endofmap = catsScores.end(); curr != catsScores.end(); curr++) // go through each category's score
-    {
-        mapSD::iterator currIn, endofmapIn;
-        for (currIn = catsScores.begin(), endofmapIn = catsScores.end(); currIn != catsScores.end(); currIn++) // compare each against each other category's score
-        {
-            if ((curr->second) <= (currIn->second)) // if it is lower than one, move on and check next one
-            {
-                foundit = true;
-                continue;
-            }
-            else if ((curr->second) > (currIn->second)) // if it is higher than any, just skipp it.
-            {
-                foundit = false;
-                break;
-            }
-        }
-
-        if (foundit) // return because it is not lower than any other
-        {
-            return curr->first;
-        }
-    }
-}
-
 // classify many documents (sets of documents)
 void NaiveBayesClassifier::naiveBayesClassifyMany(docVec& docsToTest, bool output)
 {
@@ -529,7 +513,9 @@ void NaiveBayesClassifier::naiveBayesClassifyMany(docVec& docsToTest, bool outpu
 
     for (int i = 0; i < allDocsDict2.size(); i++)
     {
-        mapSD catsScores;
+        bool temp_first_tracker = false;
+        string bestCat;
+        double minScore;
         for (int j = 0; j < cats.size(); j++)
         {
             double catScore = 0;
@@ -539,12 +525,22 @@ void NaiveBayesClassifier::naiveBayesClassifyMany(docVec& docsToTest, bool outpu
                 double currWeight = findWeight(curr->first, cats[j]); // find the weight of the current word for the current category
                 catScore += (curr->second * currWeight); // add up the number of times a word appears times its weight for that category
             }
-            // cout << cats[j] << ": " << catScore << endl;
-            catsScores.insert(pair<string, double>(cats[j], catScore));
+            
+            if (temp_first_tracker) {
+                if (catScore < minScore)
+                {
+                    bestCat = cats[j];
+                    minScore = catScore;
+                }
+            } else {
+                temp_first_tracker = true;
+                bestCat = cats[j];
+                minScore = catScore;
+            }
         }
-        // cout << endl;
+        
 
-        docsToTest[i].cat = decideBestCat(catsScores); // chooses lowest value among category scores
+        docsToTest[i].cat = bestCat; // chooses lowest value among category scores
         if (output) // if output is wanted in the console / results file
         {
             cout
