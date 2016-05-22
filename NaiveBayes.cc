@@ -226,6 +226,7 @@ mapSIVec NaiveBayesClassifier::docWordDict(smatrix& words) // ------------------
                 else if (words[n][i] == words[n][j] && i > j)
                 {
                     pushback = false;
+                    break;
                 }
             }
             if (pushback)
@@ -272,6 +273,7 @@ mapSDVec NaiveBayesClassifier::docWordDictAndVocabAndTFs(smatrix& words)
                 else if (words[n][i] == words[n][j] && i > j)
                 {
                     pushback = false;
+                    break;
                 }
             }
             if (pushback)
