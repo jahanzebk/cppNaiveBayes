@@ -88,7 +88,7 @@ public:
     void normalizeWeights();
 
     // one function to preprocess data for training and report status after each step
-    mapSDVec prepAndFindTFIDFs(docVec& docs, bool train);
+    mapSDVec prepAndFindTFIDFs(docVec& docs);
 
     // classify many documents (sets of documents)
     void naiveBayesClassifyMany(docVec& docsToTest, bool output = false);

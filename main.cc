@@ -31,7 +31,7 @@ int main()
     if (trainBool == "y")
     {
         // calculate tfidfs, train weights and normalize them
-        mapSDVec TFIDFvec = clf.prepAndFindTFIDFs(clf.docs, true);
+        mapSDVec TFIDFvec = clf.prepAndFindTFIDFs(clf.docs);
         clf.naiveBayesTrain(TFIDFvec);
         clf.normalizeWeights();
     }

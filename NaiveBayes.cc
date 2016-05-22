@@ -465,7 +465,7 @@ void NaiveBayesClassifier::normalizeWeights()
 
 
 // one function to preprocess data for training and report status after each step
-mapSDVec NaiveBayesClassifier::prepAndFindTFIDFs(docVec& docs, bool train)
+mapSDVec NaiveBayesClassifier::prepAndFindTFIDFs(docVec& docs)
 {
     svec alteredDocs = prepDocs(docs); // alter docs, i.e. remove punctuation, set to lower case..
     cout << "Altered.." << endl;
