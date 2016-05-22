@@ -253,12 +253,16 @@ mapSDVec NaiveBayesClassifier::docWordDictAndVocabAndTFs(smatrix& words)
             int count = 1;
             bool pushback = true;
 
+            // if the current word is not in the vocab, insert it
             svec::iterator it = find(vocab.begin(), vocab.end(), words[n][i]);
             if (it == vocab.end())
             {
                 vocab.push_back(words[n][i]);
             }
 
+            // going through each word for all words, increase the count if it is present, 
+            // and add it to the dictionary and tfs maps, otherwise ignore it, but still add up and discard the count after
+            // this code is nasty
             for (int j = 0; j < words[n].size(); j++)
             {
                 if (words[n][i] == words[n][j] && i < j)
@@ -326,7 +330,7 @@ mapSDVec NaiveBayesClassifier::combineTFIDF(mapSDVec& allTfs, mapSD& allIDFs)
 
 // normalizes TFIDF values so that all values are within a similar range, this prevents naive bayes from giving
 // more priority to longer documents for having more words, and thus irrationally higher TFIDF values.
-void NaiveBayesClassifier::normalizeTFIDF(mapSDVec& TFIDFvec, mapSIVec& allDocsWords)
+void NaiveBayesClassifier::normalizeTFIDF(mapSDVec& TFIDFvec)
 {
     for (int i = 0; i < TFIDFvec.size(); i++)
     {
@@ -492,7 +496,7 @@ mapSDVec NaiveBayesClassifier::prepAndFindTFIDFs(docVec& docs)
     mapSD().swap(allIDFs); // allocate memory by removing IDF values (not used again)
     cout << "Freed IDFs from RAM" << endl;
 
-    normalizeTFIDF(TFIDFvec, allDocsDict); // normalize TFIDF values
+    normalizeTFIDF(TFIDFvec); // normalize TFIDF values
     cout << "Normalized TFIDF.." << endl;
     return TFIDFvec;
 }

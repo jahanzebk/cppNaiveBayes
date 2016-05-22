@@ -65,7 +65,7 @@ private:
 
     // normalizes TFIDF values so that all values are within a similar range, this prevents naive bayes from giving
     // more priority to longer documents for having more words, and thus irrationally higher TFIDF values.
-    void normalizeTFIDF(mapSDVec& TFIDFvec, mapSIVec& allDocsWords);
+    void normalizeTFIDF(mapSDVec& TFIDFvec);
 
     // A function used while training classifier to calculate the denominator since it is same for each category gone through
     dvec calcNaiveBayesDenominator(string cat, mapSDVec& TFIDFVec);

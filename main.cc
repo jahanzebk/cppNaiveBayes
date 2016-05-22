@@ -22,7 +22,7 @@ int main()
 
     // INITIALIZATION
     // github link for sample corpii: <@TODO>
-    clf.populateDocVec("Corpus"); // change this to where mini corpus is stored with cpp file (in project folder)
+    clf.populateDocVec("Mini-Corpus"); // change this to where mini corpus is stored with cpp file (in project folder)
 
     string trainBool; // y if you want to train and create weights, anything else if you want to just read from file
     cout << "Would you like to train the algorithm, or pick up weights from the weights.txt file? y for yes (train from corpus - longer), anything else for no(train from weights.txt - quicker).";
